@@ -1,11 +1,16 @@
 Screen {
     overflow: hidden;
+    border: round rgba(20, 20, 20, 0.4) 20%;
+}
+
+.hidden {
+    display: none
 }
 
 #cli-corners {
     height: 1fr;
     width: 100%;
-    border: rgb(25, 233, 188);
+    border: round rgba(0, 217, 255, 0.99);
     overflow-y: scroll;
     scrollbar-size: 0 0;
 }
@@ -14,11 +19,11 @@ Screen {
     dock: bottom;
     height: 3;
     width: 100%;
-    border: rgb(233, 87, 25);
+    border: round rgb(34, 143, 194);
 }
 
 #prompt-label {
-    width: 3;
+    width: 2;
     height: 100%;
     content-align: center middle;
     color: rgb(233, 87, 25);
@@ -28,4 +33,14 @@ Screen {
     height: 1fr;
     width: 100%;
     border: none;
+    color: white;
+}
+
+#menuCmds {
+    height: auto; 
+    max-height: 10;
+    background: $surface;
+    border: solid $primary; 
+    dock:bottom;
+    margin-bottom: 3;
 }
