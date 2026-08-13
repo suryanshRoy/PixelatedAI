@@ -32,6 +32,13 @@ class PixelatedCLI(App):
     ]
 
     AVAILABLE_COMMANDS = ["/quit", "/clear", "/models", "/mcp", "/resume"]
+    COMMAND_DESCRIPTIONS = {
+        "/clear": "/clear - Start a new session",
+        "/quit": "/quit - Quit Pixelated AI",
+        "/models": "/models - Choose a different model",
+        "/mcp": "/mcp - Configure mcp server settings",
+        "/resume": "/resume - Resume a past conversation"
+    }
 
     def compose(self) -> ComposeResult:
         with VerticalScroll(id="cli-corners"): # for corner color of cli and all vertical contents
@@ -48,11 +55,7 @@ class PixelatedCLI(App):
             )
 
         yield OptionList(
-            "clear - Start a new session",
-            "quit - Quit Pixelated AI",
-            "models - Choose a different model",
-            "mcp - Configure mcp server settings",
-            "resume - Resume a past conversations",
+            *[Option(desc) for desc in self.COMMAND_DESCRIPTIONS.values()],
             id="menuCmds",
             classes="hidden",
             disabled=False
@@ -60,11 +63,29 @@ class PixelatedCLI(App):
 
     def on_input_changed(self, event: Input.Changed) -> None:
         menuCmds = self.query_one("#menuCmds", OptionList)
+        menuCmds.clear_options() 
 
         if event.value.startswith("/"):
             menuCmds.remove_class("hidden")
         else:
             menuCmds.add_class("hidden")
+            return
+
+        searchedInp = event.value[1:].lower() # everything after /
+        matches = [
+            desc for cmd, desc in self.COMMAND_DESCRIPTIONS.items() 
+            if searchedInp in cmd[1:].lower()
+        ]
+        sort_matches = sorted(
+            matches, 
+            key=lambda desc: not desc.split(" - ")[0][1:].lower().startswith(searchedInp)
+        )
+        finalOpts = [
+            Option(desc) for desc in (sort_matches if searchedInp else self.COMMAND_DESCRIPTIONS.values())
+        ]
+
+        menuCmds.add_options(finalOpts)
+
 
     def on_option_list_option_selected(self, event: OptionList.OptionSelected) -> None:
         inpWidget = self.query_one("#user-input", Input)
