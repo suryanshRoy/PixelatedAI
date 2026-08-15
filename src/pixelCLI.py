@@ -121,6 +121,13 @@ class PixelatedCLI(App):
 
         self.query_one("#menuCmds", OptionList).add_class("hidden")
 
+    def on_input_submitted(self, event: Input.Submitted) -> None:
+        submittedText = event.value.strip().lower()
+
+        if submittedText in ("/quit", "/exit"):
+            self.exit()
+        event.input.value = ""
+
 if __name__ == "__main__":
     app = PixelatedCLI()
     app.run()
