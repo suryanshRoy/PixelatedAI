@@ -1,7 +1,7 @@
 import time
 from textual.app import App, ComposeResult
 from textual.widgets import Button, Digits, Static, Input, LoadingIndicator, OptionList, Label, Placeholder, Footer
-from textual.containers import HorizontalGroup, VerticalScroll, Container
+from textual.containers import HorizontalGroup, VerticalScroll, Container, Horizontal
 import typer
 from textual.screen import Screen
 from textual.binding import Binding, BindingType
@@ -93,14 +93,16 @@ class PixelatedCLI(App):
                 id="user-input", 
                 suggester=SuggestFromList(self.AVAILABLE_COMMANDS, case_sensitive=False)
             )
-
-        yield Footer(classes="FooterTxt")
         yield OptionList(
             *[Option(desc) for desc in self.COMMAND_DESCRIPTIONS.values()],
             id="menuCmds",
             classes="hidden",
             disabled=False
         )
+
+        with HorizontalGroup(id="FooterBtn-cont"):
+            yield Button(label=f"{self.current_use_mode} Mode", variant="primary")
+            yield Button(label="Quit", variant="primary")
 
     def on_input_changed(self, event: Input.Changed) -> None:
         menuCmds = self.query_one("#menuCmds", OptionList)
@@ -144,6 +146,9 @@ class PixelatedCLI(App):
         if submittedText in ("/quit", "/exit"):
             self.exit()
         event.input.value = ""
+
+    def on_button_pressed(self, event: Button.Pressed) -> None:
+        self.exit(str(event.button))
 
 if __name__ == "__main__":
     app = PixelatedCLI()

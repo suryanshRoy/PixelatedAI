@@ -3,11 +3,21 @@ Screen {
     border: round rgba(20, 20, 20, 0.4) 20%;
 }
 
-.FooterTxt {
+#FooterBtn-cont {
     dock: bottom;
-    color: white;
     width: 100%;
+    height: auto;
+    border: none;
+}
+
+#FooterBtn-cont Button {
     height: 1;
+    border: none;
+    min-width: 8;
+    padding: 0 1;
+    margin: 1 1;
+    background: rgba(67, 88, 88, 0.4);
+    color: rgba(9, 166, 210, 0.77);
     text-align: center;
 }
 
@@ -25,7 +35,7 @@ Screen {
 
 #input-container {
     dock: bottom;
-    margin-bottom: 1;
+    margin-bottom: 3;
     height: 3;
     width: 100%;
     border: round rgb(34, 143, 194);
@@ -51,6 +61,6 @@ Screen {
     background: $surface;
     border: solid $primary; 
     dock:bottom;
-    margin-bottom: 4;
+    margin-bottom: 6;
     overflow-y: auto;
 }
