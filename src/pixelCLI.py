@@ -1,9 +1,9 @@
-import argparse
 import time
 from textual.app import App, ComposeResult
-from textual.widgets import Button, Digits, Static, Input, LoadingIndicator, OptionList, Label
+from textual.widgets import Button, Digits, Static, Input, LoadingIndicator, OptionList, Label, Placeholder, Footer
 from textual.containers import HorizontalGroup, VerticalScroll, Container
 import typer
+from textual.screen import Screen
 from textual.binding import Binding, BindingType
 from rich.console import Console, ConsoleOptions, RenderResult
 from textual.suggester import SuggestFromList
@@ -34,6 +34,17 @@ class CustomInput(Input):
                 self.cursor_position = len(self.value)
                 menuCmds.add_class("hidden")
                 return
+            elif event.key == "down":
+                event.prevent_default()
+                event.stop()
+                menuCmds.action_cursor_down()
+                return
+
+            elif event.key == "up":
+                event.prevent_default()
+                event.stop()
+                menuCmds.action_cursor_up()
+                return
 
         super()._on_key(event) # Call the original _on_key method for other keys
 
@@ -42,11 +53,14 @@ class PixelatedCLI(App):
 
     CSS_PATH = "Pixelated.tcss"
     ENABLE_COMMAND_PALETTE = False
+    current_use_mode = "Manual" #TODO need to change this
 
     # TODO need to add more bindings
     BINDINGS: list[BindingType] = [
-        Binding("ctrl+c", "quit", "Quit Pixelated AI", priority=True),
-        Binding("ctrl+d", "quit", "Quit Pixelated AI", priority=True),
+        Binding("shift+tab", "current_mode", f"-> {current_use_mode} Mode", show=True, priority=True),
+        Binding("question_mark", "show_help", "-> help", priority=True, show=True, key_display="?"),
+        Binding("ctrl+c", "quit", "-> Quit", priority=True, show=True),
+        Binding("ctrl+d", "quit", "Quit Pixelated AI", show=False),
         Binding("down", "cursor_down", "Down", show=False),
         Binding("end", "last", "Last", show=False),
         Binding("enter", "select", "Select", show=False),
@@ -56,13 +70,14 @@ class PixelatedCLI(App):
         Binding("up", "cursor_up", "Up", show=False)
     ]
 
-    AVAILABLE_COMMANDS = ["/quit", "/clear", "/models", "/mcp", "/resume"]
+    AVAILABLE_COMMANDS = ["/clear", "/quit", "/models", "/mcp", "/resume", "/keybindings"]
     COMMAND_DESCRIPTIONS = {
         "/clear": "/clear - Start a new session",
         "/quit": "/quit - Quit Pixelated AI",
         "/models": "/models - Choose a different model",
         "/mcp": "/mcp - Configure mcp server settings",
-        "/resume": "/resume - Resume a past conversation"
+        "/resume": "/resume - Resume past conversation",
+        "/keybinding": "/keybinding - Customise keybindings"
     }
 
     def compose(self) -> ComposeResult:
@@ -79,6 +94,7 @@ class PixelatedCLI(App):
                 suggester=SuggestFromList(self.AVAILABLE_COMMANDS, case_sensitive=False)
             )
 
+        yield Footer(classes="FooterTxt")
         yield OptionList(
             *[Option(desc) for desc in self.COMMAND_DESCRIPTIONS.values()],
             id="menuCmds",
@@ -106,6 +122,7 @@ class PixelatedCLI(App):
 
             if finalOpts:
                 menuCmds.add_options(finalOpts)
+                menuCmds.highlighted = 0
                 menuCmds.remove_class("hidden")
             else:
                 menuCmds.add_class("hidden")
