@@ -8,7 +8,7 @@ Screen {
     width: 100%;
     height: auto;
     border: none;
-    padding-top: 1;
+    padding-top: 0;
 }
 
 #FooterBtn-cont Button {
@@ -16,7 +16,7 @@ Screen {
     border: none;
     min-width: 8;
     padding: 0 1;
-    margin: 0 2;
+    margin: 0 1;
     background: rgba(67, 88, 88, 0.4);
     color: rgba(9, 166, 210, 0.77);
     text-align: center;
@@ -36,7 +36,7 @@ Screen {
 
 #input-container {
     dock: bottom;
-    margin-bottom: 2;
+    margin-bottom: 1;
     height: 3;
     width: 100%;
     border-top: double rgb(34, 194, 194);
@@ -66,6 +66,6 @@ Screen {
     background: rgba(20, 20, 20, 0.4) 20%;
     border: round rgba(20, 20, 20, 0.4) 20%;
     dock:bottom;
-    margin-bottom: 5;
+    margin-bottom: 4;
     overflow-y: auto;
 }
