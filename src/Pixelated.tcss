@@ -69,3 +69,9 @@ Screen {
     margin-bottom: 4;
     overflow-y: auto;
 }
+
+#unHumanlogo {
+    width: 100%;
+    border: none;
+    margin: 1 0;
+}

@@ -10,6 +10,7 @@ from textual.suggester import SuggestFromList
 from textual.widgets.option_list import Option
 from textual import events
 import random
+from pixel_logo import Logo
 
 console = Console()
 
@@ -81,10 +82,8 @@ class PixelatedCLI(App):
     }
 
     def compose(self) -> ComposeResult:
-        with VerticalScroll(id="cli-corners"): # for corner color of cli and all vertical contents
-            for i in range(50):
-                yield Static(f"Example {i+1} of scroll working")
-            yield Static("Main content here in the box!")
+        with VerticalScroll(id="cli-corners"):
+            yield Logo(id="unHumanlogo")
 
         with HorizontalGroup(id="input-container"):
             yield Label("> ", id="prompt-label")
