@@ -71,15 +71,21 @@ class PixelatedCLI(App):
         Binding("up", "cursor_up", "Up", show=False)
     ]
 
-    AVAILABLE_COMMANDS = ["/clear", "/quit", "/models", "/mcp", "/resume", "/keybindings"]
+    AVAILABLE_COMMANDS = ["/clear", "/quit", "/models", "/mcp", "/resume", "/keybindings", "/path", "/restart"]
     COMMAND_DESCRIPTIONS = {
         "/clear": "/clear - Start a new session",
         "/quit": "/quit - Quit Pixelated AI",
         "/models": "/models - Choose a different model",
         "/mcp": "/mcp - Configure mcp server settings",
         "/resume": "/resume - Resume past conversation",
-        "/keybinding": "/keybinding - Customise keybindings"
+        "/keybinding": "/keybinding - Customise keybindings",
+        "/path": "/path - Configure the path where you want to save output files",
+        "/restart" : "/restart - Restart Pixelated AI"
     }
+
+    def __init__(self, initial_mode: str = "Auto", *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.current_use_mode = initial_mode.capitalize()
 
     def compose(self) -> ComposeResult:
         with VerticalScroll(id="cli-corners"):
@@ -100,8 +106,9 @@ class PixelatedCLI(App):
         )
 
         with HorizontalGroup(id="FooterBtn-cont"):
-            yield Button(label=f"{self.current_use_mode} Mode", variant="primary")
-            yield Button(label="Quit", variant="primary")
+            yield Button(label=f"{self.current_use_mode} Mode", variant="primary", id="curModeBtn")
+            yield Button(label="Quit", variant="primary", id="quitBtn")
+            yield Button(label="Help", variant="primary", id="helpBtn")
 
     def on_input_changed(self, event: Input.Changed) -> None:
         menuCmds = self.query_one("#menuCmds", OptionList)
@@ -147,7 +154,24 @@ class PixelatedCLI(App):
         event.input.value = ""
 
     def on_button_pressed(self, event: Button.Pressed) -> None:
-        self.exit(str(event.button))
+        btnID = event.button.id
+
+        if btnID == "curModeBtn":
+            #change btn work mode when pressed
+            if self.current_use_mode.lower() == "auto":
+                self.current_use_mode = "plan"
+            elif self.current_use_mode.lower() == "plan":
+                self.current_use_mode = "auto"
+            else:
+                self.current_use_mode = "auto"
+
+            event.button.label = f"{self.current_use_mode.capitalize()} Mode"
+
+        elif btnID == "quitBtn":
+            self.exit()
+
+        elif btnID == "helpBtn":
+            self.notify("Nothing to help you as for now!")
 
 if __name__ == "__main__":
     app = PixelatedCLI()
