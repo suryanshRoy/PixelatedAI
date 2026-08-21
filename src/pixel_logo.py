@@ -29,18 +29,18 @@ UNHUMAN = """
       █      |      █
       █      |      █
       █     ▟ ▙     █
-      █▄▄▄▄▄█ █▄▄▄▄▄▟
+      █▄▄▄▄▄█ █▄▄▄▄▄█
 """
 
 class Logo(Static):
     def render(self):
         logo_text = Text(UNHUMAN, justify="left")
-        logo_text.stylize("bold #D4FF33")
+        logo_text.stylize("bold dim red")
         
         return Panel(
             logo_text,
-            title="[bold #48C9B0]Pixelated AI[/]",
-            border_style="#15EDC2",
+            title="[bold red]Pixelated AI[/]",
+            border_style="cyan",
             expand=False,
             padding=(0, 2)
         )
