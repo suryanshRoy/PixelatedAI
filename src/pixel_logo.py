@@ -34,20 +34,28 @@ class Logo(Static):
         self.model = model
 
     def render(self):
-        logo_text = Text(UNHUMAN, justify="left")
+        logo_text = Text(UNHUMAN, justify="left", no_wrap=True)
         logo_text.stylize(style=rich_color.name)
         
+        is_small_screen = 0 < self.size.width < 75
+
         statusTxt = Text()
-        statusTxt.append("\n\n") #match the upper head stating
+        if not is_small_screen:
+            statusTxt.append("\n\n") #match the upper head starting
         statusTxt.append("Model: ", style="bold red")
         statusTxt.append(f"{self.model}\n", style="dim white")
         statusTxt.append("Directory: ", style="bold red")
         statusTxt.append(f"{os.getcwd()}\n", style="dim white")
         
-        grid = Table.grid(padding=(0, 4))
-        grid.add_column() # for logo
-        grid.add_column() # for status text of models and directory
-        grid.add_row(logo_text, statusTxt)
+        grid = Table.grid(padding=(0, 2))
+        if is_small_screen:
+            grid.add_column()
+            grid.add_row(logo_text)
+            grid.add_row(statusTxt)
+        else:
+            grid.add_column(no_wrap=True) # for logo
+            grid.add_column() # for status text of models and directory
+            grid.add_row(logo_text, statusTxt)
 
         return Panel(
             grid,
