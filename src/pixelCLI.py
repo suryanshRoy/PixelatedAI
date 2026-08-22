@@ -1,7 +1,7 @@
 import time
 from textual.app import App, ComposeResult
 from textual.widgets import Button, Digits, Static, Input, LoadingIndicator, OptionList, Label, Placeholder, Footer
-from textual.containers import HorizontalGroup, VerticalScroll, Container, Horizontal
+from textual.containers import HorizontalGroup, VerticalScroll, Container, Vertical, Horizontal, HorizontalScroll
 import typer
 from textual.screen import Screen
 from textual.binding import Binding, BindingType
@@ -11,6 +11,8 @@ from textual.widgets.option_list import Option
 from textual import events
 import random
 from pixel_logo import Logo
+from textual.theme import Theme
+import os
 
 console = Console()
 
@@ -47,7 +49,7 @@ class CustomInput(Input):
                 menuCmds.action_cursor_up()
                 return
 
-        super()._on_key(event) # Call the original _on_key method for other keys
+        super()._on_key(event)
 
 class PixelatedCLI(App):
     """A basic CLI for Pixelated AI"""
@@ -71,7 +73,7 @@ class PixelatedCLI(App):
         Binding("up", "cursor_up", "Up", show=False)
     ]
 
-    AVAILABLE_COMMANDS = ["/clear", "/quit", "/models", "/mcp", "/resume", "/keybindings", "/path", "/restart"]
+    AVAILABLE_COMMANDS = ["/clear", "/quit", "/models", "/mcp", "/resume", "/keybindings", "/path", "/restart", "/theme"]
     COMMAND_DESCRIPTIONS = {
         "/clear": "/clear - Start a new session",
         "/quit": "/quit - Quit Pixelated AI",
@@ -80,16 +82,18 @@ class PixelatedCLI(App):
         "/resume": "/resume - Resume past conversation",
         "/keybinding": "/keybinding - Customise keybindings",
         "/path": "/path - Configure the path where you want to save output files",
-        "/restart" : "/restart - Restart Pixelated AI"
+        "/restart" : "/restart - Restart Pixelated AI",
+        "/theme": "/theme - Choose the theme that you may like"
     }
 
-    def __init__(self, initial_mode: str = "Auto", *args, **kwargs):
+    def __init__(self, initial_mode: str = "Auto", model: str = "None", *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.current_use_mode = initial_mode.capitalize()
+        self.model = model
 
     def compose(self) -> ComposeResult:
         with VerticalScroll(id="cli-corners"):
-            yield Logo(id="unHumanlogo")
+            yield Logo(id="unHumanlogo", model=self.model)
 
         with HorizontalGroup(id="input-container"):
             yield Label("> ", id="prompt-label")
